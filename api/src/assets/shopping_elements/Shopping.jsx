@@ -68,7 +68,7 @@ function Shopping({ selectedcategory, product }) {
                 Add to Cart
               </button>
 
-              <button onClick={() => dispatch(RemoveItem(item.id))}>
+              <button onClick={() => dispatch(RemoveItem(item))}>
                 Remove from Cart
               </button>
             </div>
