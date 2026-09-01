@@ -1,28 +1,16 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { AddItem, RemoveItem } from '../../cartSlice';
-import { MakeOrder } from '../../ordersSlice';
-import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 function Cart() {
   const dispatch = useDispatch();
 
   const cart = useSelector((state) => state.cart.ItemsList);
-  const currentUser = useSelector((state) => state.user.currentUser);
   const totalPrice = useSelector((state) => state.cart.TotalPrice);
+  const currentUser = useSelector((state) => state.user.currentUser);
 
-  const handleSubmit = async () => {
-    try {
-      await axios.post('http://localhost:8080/api/auth/orders', {
-        items: cart,
-        user: currentUser,
-      });
-
-      dispatch(MakeOrder({ items: cart, user: currentUser }));
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  console.log('CART USER:', currentUser);
 
   return (
     <div className="cart-page">
@@ -34,8 +22,16 @@ function Cart() {
       {cart.length === 0 ? (
         <div className="empty-cart">
           <div className="empty-cart-icon">🛒</div>
+
           <h2>Your cart is empty</h2>
+
           <p>Add some products to your cart and they'll appear here.</p>
+
+          <Link to="/home">
+            <button className="continue-shopping-button">
+              Continue Shopping
+            </button>
+          </Link>
         </div>
       ) : (
         <div className="cart-layout">
@@ -50,7 +46,9 @@ function Cart() {
                 <div className="cart-product-info">
                   <h3>{item.title}</h3>
 
-                  <p className="cart-product-price">${item.price}</p>
+                  <p className="cart-product-price">
+                    ${Number(item.price).toFixed(2)}
+                  </p>
 
                   <div className="quantity-container">
                     <span>Quantity</span>
@@ -69,6 +67,7 @@ function Cart() {
 
                 <div className="cart-product-total">
                   <span>Total</span>
+
                   <strong>
                     ${(item.price * (item.Quantity || 1)).toFixed(2)}
                   </strong>
@@ -83,11 +82,13 @@ function Cart() {
 
             <div className="summary-row">
               <span>Subtotal</span>
+
               <span>${Number(totalPrice).toFixed(2)}</span>
             </div>
 
             <div className="summary-row">
               <span>Shipping</span>
+
               <span className="free">FREE</span>
             </div>
 
@@ -95,12 +96,14 @@ function Cart() {
 
             <div className="summary-total">
               <span>Total</span>
+
               <strong>${Number(totalPrice).toFixed(2)}</strong>
             </div>
 
-            <button className="checkout-button" onClick={handleSubmit}>
-              Proceed to Checkout
-            </button>
+            {/* GO TO STRIPE CHECKOUT */}
+            <Link to="/checkout" className="checkout-link">
+              <button className="checkout-button">Proceed to Checkout</button>
+            </Link>
 
             <p className="secure-checkout">🔒 Secure checkout</p>
           </div>

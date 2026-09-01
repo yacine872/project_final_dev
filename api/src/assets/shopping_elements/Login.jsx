@@ -19,7 +19,7 @@ function Login() {
       const user = res.data.user;
       dispatch(userAction.setCurrentUser(user));
 
-      navigate('/');
+      navigate('/home');
     } catch (error) {
       console.log(error);
     }

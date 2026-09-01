@@ -17,6 +17,36 @@ router.get('/orders/:email', async (req, res) => {
   res.json(order);
 });
 
+router.post('/orders', async (req, res) => {
+  try {
+    const { items, user } = req.body;
+
+    console.log('ORDER REQUEST:', req.body);
+
+    const order = await Order.create({
+      items: items.map((item) => ({
+        id: item.id,
+        title: item.title,
+      })),
+      email: user.email,
+    });
+
+    console.log('ORDER CREATED:', order);
+
+    res.status(201).json({
+      message: 'Order created successfully',
+      order,
+    });
+  } catch (err) {
+    console.error('ORDER ERROR:', err);
+
+    res.status(500).json({
+      message: 'Could not create order',
+      error: err.message,
+    });
+  }
+});
+
 router.post('/payment-intent', async (req, res) => {
   const { amount } = req.body;
   try {

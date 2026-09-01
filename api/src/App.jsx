@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import axios from 'axios';
-import { useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+
 import Productdetails from './assets/shopping_elements/Productdetails';
 import Cart from './assets/shopping_elements/Cart';
 import Checkout from './assets/shopping_elements/Checkout';
@@ -21,40 +21,55 @@ function App() {
         const res = await axios.get('http://localhost:8080/products');
 
         setProduct(res.data);
-        // console.log(res.data);
       } catch (error) {
         console.log(error);
       }
     };
+
     axiosData();
   }, []);
 
   return (
-    <div>
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <Home
-                setSelectedcategory={setSelectedcategory}
-                selectedcategory={selectedcategory}
-                product={product}
-              />
-            }
-          />
-          <Route
-            path="/productdetails/:id"
-            element={<Productdetails product={product} />}
-          />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/originalpage" element={<Originalpage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Register />} />
+
+        {/* SHOP */}
+        <Route
+          path="/home"
+          element={
+            <Home
+              setSelectedcategory={setSelectedcategory}
+              selectedcategory={selectedcategory}
+              product={product}
+            />
+          }
+        />
+
+        {/* PRODUCTS */}
+        <Route
+          path="/productdetails/:id"
+          element={<Productdetails product={product} />}
+        />
+
+        {/* CART */}
+        <Route path="/cart" element={<Cart />} />
+
+        {/* CHECKOUT */}
+        <Route path="/checkout" element={<Checkout />} />
+
+        {/* AUTH */}
+        <Route path="/login" element={<Login />} />
+
+        <Route path="/register" element={<Register />} />
+
+        {/* ORIGINAL PAGE */}
+        <Route path="/originalpage" element={<Originalpage />} />
+
+        {/* ANY UNKNOWN URL → LOGIN */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

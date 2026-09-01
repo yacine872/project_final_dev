@@ -4,7 +4,11 @@ const bcryptjs = require('bcryptjs');
 exports.register = async (req, res) => {
   try {
     const { first_name, last_name, username, password, email } = req.body;
+
+    console.log('Register request:', req.body);
+
     const hashed = await bcryptjs.hash(password, 10);
+
     const user = await User.create({
       first_name,
       last_name,
@@ -12,24 +16,40 @@ exports.register = async (req, res) => {
       password: hashed,
       email,
     });
+
+    console.log('User created:', user);
+
     res.status(200).json(user);
   } catch (err) {
-    res.status(500).json({ message: 'Erreur serveur' });
+    console.error('REGISTER ERROR:', err);
+
+    res.status(500).json({
+      message: 'Erreur serveur',
+      error: err.message,
+    });
   }
 };
 
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
     const exists = await User.findOne({ email });
+
     if (!exists) {
-      return res.status(400).json({ message: 'this email does not exist' });
+      return res.status(400).json({
+        message: 'this email does not exist',
+      });
     }
+
     const valid = await bcryptjs.compare(password, exists.password);
 
     if (!valid) {
-      return res.status(400).json({ message: 'password incorrect' });
+      return res.status(400).json({
+        message: 'password incorrect',
+      });
     }
+
     return res.status(200).json({
       message: 'successfully logged in',
       user: {
@@ -38,7 +58,11 @@ exports.login = async (req, res) => {
       },
     });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: 'Server error' });
+    console.error('LOGIN ERROR:', err);
+
+    res.status(500).json({
+      message: 'Server error',
+      error: err.message,
+    });
   }
 };
