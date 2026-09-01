@@ -32,8 +32,8 @@ function CheckoutForm({ totalAmount }) {
         items: cart,
         user: currentUser,
       });
-      dispatch(MakeOrder());
-      dispatch(ClearOrder({ items: cart, user: currentUser }));
+      dispatch(MakeOrder({ items: cart, user: currentUser }));
+      dispatch(ClearOrder());
     }
   };
   return (
